@@ -163,7 +163,7 @@ USAGE:
                 Available champions: https://leagueoflegends.fandom.com/wiki/Bots#Available_Bots
    DIFFICULTY = "EASY" "MEDIUM"
    POLICY     = "AllAllowed" "NotAllowed"
-   MODE       = "CUSTOM" "PRACTICETOOL"
+   MODE       = "CLASSIC" "PRACTICETOOL"
 
 EXAMPLES:
   Full random teams:
@@ -195,8 +195,8 @@ def parse_args(config, argv):
             config["password"] = "" if v is None else v
             next(itr)
         elif k in ["-m", "--mode"]:
-            if v not in ["CUSTOM", "PRACTICETOOL"]:
-                print(f'Cannot parse game mode "{v}". Expected "CUSTOM" or "PRACTICETOOL".')
+            if v not in ["CLASSIC", "PRACTICETOOL"]:
+                print(f'Cannot parse game mode "{v}". Expected "CLASSIC" or "PRACTICETOOL".')
                 return 1
             config["mode"] = v
             next(itr)
@@ -215,7 +215,7 @@ def parse_args(config, argv):
 
 config = {
     "password": "delete yuumi",
-    "mode": ["CUSTOM", "PRACTICETOOL"][1],
+    "mode": ["CLASSIC", "PRACTICETOOL"][1],
     "spectator_policy": ["AllAllowed", "NotAllowed"][1],
     "bots": "? ? ? ?|? ? ? ? ?",
     "lobby_name": "lobby",
