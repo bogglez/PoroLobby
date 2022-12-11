@@ -17,7 +17,7 @@ CHAMPION   = "?"                   Set a random champion.
            = "Alistar"             Set a specific champion.
              Available champions: https://leagueoflegends.fandom.com/wiki/Bots#Available_Bots
 DIFFICULTY = "EASY" "MEDIUM"
-POLICY     = "AllAllowed" "NotAllowed"
+POLICY     = "NotAllowed" "LobbyAllowed" "FriendsAllowed" "AllAllowed"
 MODE       = "CUSTOM" "PRACTICETOOL"
 ```
 
