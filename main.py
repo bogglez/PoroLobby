@@ -179,7 +179,6 @@ EXAMPLES:
 def parse_args(config, argv):
     itr = itertools.pairwise(sys.argv[1:] + [None])
     for (k, v) in itr:
-        print(f"Parsing {k} {v}")
         if k in ["-h", "--help"]:
             print_help(argv[0])
             return 0
