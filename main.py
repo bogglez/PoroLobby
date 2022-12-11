@@ -11,7 +11,7 @@ async def create_lobby(connection, game_mode, lobby_name, password, spectator_po
     if game_mode not in ["PRACTICETOOL", "CLASSIC"]:
         raise ValueError(f'game_mode={game_mode}')
 
-    if spectator_policy not in ["AllAllowed", "NotAllowed"]:
+    if spectator_policy not in ["NotAllowed", "LobbyAllowed", "FriendsAllowed", "AllAllowed"]:
         raise ValueError(f'spectator_policy={spectator_policy}')
 
     data = {
@@ -162,7 +162,7 @@ USAGE:
               = "Alistar"             Set a specific champion.
                 Available champions: https://leagueoflegends.fandom.com/wiki/Bots#Available_Bots
    DIFFICULTY = "EASY" "MEDIUM"
-   POLICY     = "AllAllowed" "NotAllowed"
+   POLICY     = "NotAllowed" "LobbyAllowed" "FriendsAllowed" "AllAllowed"
    MODE       = "CLASSIC" "PRACTICETOOL"
 
 EXAMPLES:
@@ -186,7 +186,7 @@ def parse_args(config, argv):
             print_help(argv[0])
             return 0
         elif k in ["-s", "--spectator-policy"]:
-            if v not in ["AllAllowed", "NotAllowed"]:
+            if v not in ["NotAllowed", "LobbyAllowed", "FriendsAllowed", "AllAllowed"]:
                 print(f'Cannot parse specator policy "{v}". Expected "AllAllowed" or "NotAllowed".')
                 return 1
             config["spectator_policy"] = v
@@ -216,7 +216,7 @@ def parse_args(config, argv):
 config = {
     "password": "delete yuumi",
     "mode": ["CLASSIC", "PRACTICETOOL"][1],
-    "spectator_policy": ["AllAllowed", "NotAllowed"][1],
+    "spectator_policy": ["NotAllowed", "LobbyAllowed", "FriendsAllowed", "AllAllowed"][0],
     "bots": "? ? ? ?|? ? ? ? ?",
     "lobby_name": "lobby",
 }
