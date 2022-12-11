@@ -31,15 +31,17 @@ async def create_lobby(connection, game_mode, lobby_name, password, spectator_po
         },
     }
     async with connection.post('/lol-lobby/v2/lobby', json=data) as response:
+        text = await response.json()
         if response.status != 200:
-            raise RuntimeError("Cannot create lobby.")
-        return await response.json()
+            raise RuntimeError(f'Cannot create lobby: {text}')
+        return text
 
 async def get_available_bots(connection):
     async with connection.get('/lol-lobby/v2/lobby/custom/available-bots') as response:
+        text = await response.json()
         if response.status != 200:
-            raise RuntimeError("Cannot request available bots.")
-        return await response.json()
+            raise RuntimeError(f'Cannot request available bots: {text}')
+        return text
 
 def get_champion_id_of_bot(available_bots, name):
     for champion in available_bots:
@@ -60,9 +62,10 @@ async def add_bot(connection, champion_id, team_id, difficulty):
         "teamId": team_id
     }
     async with connection.post('/lol-lobby/v1/lobby/custom/bots', json=data) as response:
+        text = await response.json()
         if response.status != 204:
-            raise RuntimeError(f'Cannot add bot with champion_id={champion_id} team_id={team_id} difficulty={difficulty}.')
-        return await response.json()
+            raise RuntimeError(f'Cannot add bot with champion_id={champion_id} team_id={team_id} difficulty={difficulty}: {text}')
+        return text
 
 async def add_bots(connection, available_bots, bots_red, bots_blue, default_difficulty):
     bot_count_red = len(bots_red)
