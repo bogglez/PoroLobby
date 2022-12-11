@@ -2,8 +2,10 @@
 
 import aiohttp
 import asyncio
+import itertools
 import psutil
 import random
+import sys
 
 async def create_lobby(connection, game_mode, lobby_name, password, spectator_policy):
     if game_mode not in ["PRACTICETOOL", "CLASSIC"]:
@@ -122,27 +124,99 @@ def determine_app_port_and_token():
         raise RuntimeError("Cannot determine app port and token.")
     return (port, token)
 
-async def main(difficulty, password, mode, bots, spectator_policy, port, token):
-    bots_by_team = bots.split("|", 1)
-    bots_red = bots_by_team[0].split()
+async def main(config, port, token):
+    bots_by_team = config["bots"].split("|", 1)
     if len(bots_by_team) > 1:
+        bots_red = bots_by_team[0].split()
         bots_blue = bots_by_team[1].split()
+    else:
+        bots_blue = bots_by_team[0].split()
+        bots_red = []
 
     base_url = f'https://127.0.0.1:{port}'
 
     async with aiohttp.ClientSession(base_url, connector=aiohttp.TCPConnector(ssl=False), auth=aiohttp.BasicAuth('riot', token)) as connection:
         lobby, available_bots = await asyncio.gather(
-            create_lobby(connection, mode, "lobby", password, spectator_policy),
+            create_lobby(connection, config["mode"], config["lobby_name"], config["password"], config["spectator_policy"]),
             get_available_bots(connection)
         )
 
-        await add_bots(connection, available_bots, bots_red, bots_blue, difficulty, )
+        await add_bots(connection, available_bots, bots_red, bots_blue, "MEDIUM")
 
-difficulty = ["EASY", "MEDIUM"][1]
-password = "delete yuumi"
-mode = ["CUSTOM", "PRACTICETOOL"][1]
-spectator_policy = ["AllAllowed", "NotAllowed"][1]
-bots = "? ? ? ?|? ? ? ? ?"
+def print_help(program_name):
+    print(f'''{program_name} -h/--help -s/--specator-policy POLICY -p/--password PASSWORD -m/--mode MODE -l/--lobby-name LOBBYNAME TEAMS
+
+A tool to create a custom game or practice tool lobby with multiple bots.
+Bots on each team can be chosen randomly or by name at a given difficulty each.
+
+USAGE:
+   TEAMS      = "TEAM|TEAM"           Set red and blue teams.
+              = "TEAM"                Set blue team only.
+   TEAM       = "BOT BOT BOT BOT BOT" Set team's bots (0 to 4 for red, 0 to 5 for blue).
+   BOT        = "CHAMPION:DIFFICULTY" Set a champion at the given difficulty.
+              = "CHAMPION"            Set a champion at medium difficulty.
+   CHAMPION   = "?"                   Set a random champion.
+              = "Alistar"             Set a specific champion.
+                Available champions: https://leagueoflegends.fandom.com/wiki/Bots#Available_Bots
+   DIFFICULTY = "EASY" "MEDIUM"
+   POLICY     = "AllAllowed" "NotAllowed"
+   MODE       = "CUSTOM" "PRACTICETOOL"
+
+EXAMPLES:
+  Full random teams:
+  {program_name} "? ? ? ?|? ? ? ? ?"
+
+  Alistar on left team with you, 2 randoms on other:
+  {program_name} "Alistar|? ?"
+
+  1v1 against Brand:
+  {program_name} "Brand"
+
+  Own champs easy, opposing champs medium difficulty:
+  {program_name} "?:EASY ?:EASY ?:EASY ?:EASY|? ? ? ? ?"
+''')
+
+def parse_args(config, argv):
+    itr = itertools.pairwise(sys.argv[1:] + [None])
+    for (k, v) in itr:
+        print(f"Parsing {k} {v}")
+        if k in ["-h", "--help"]:
+            print_help(argv[0])
+            return 0
+        elif k in ["-s", "--spectator-policy"]:
+            if v not in ["AllAllowed", "NotAllowed"]:
+                print(f'Cannot parse specator policy "{v}". Expected "AllAllowed" or "NotAllowed".')
+                return 1
+            config["spectator_policy"] = v
+        elif k in ["-p", "--password"]:
+            config["password"] = "" if v is None else v
+        elif k in ["-m", "--mode"]:
+            if v not in ["CUSTOM", "PRACTICETOOL"]:
+                print(f'Cannot parse game mode "{v}". Expected "CUSTOM" or "PRACTICETOOL".')
+                return 1
+            config["mode"] = v
+        elif k in ["-l", "--lobby-name"]:
+            if v is None or len(v) == 0:
+                print("Expected lobby name")
+                return 1
+            config["lobby_name"] = v
+        elif k.startswith('-'):
+            print(f'Unknown command line argument "{k}".')
+            return 1
+        else:
+            config["bots"] = k
+    return None
+
+config = {
+    "password": "delete yuumi",
+    "mode": ["CUSTOM", "PRACTICETOOL"][1],
+    "spectator_policy": ["AllAllowed", "NotAllowed"][1],
+    "bots": "? ? ? ?|? ? ? ? ?",
+    "lobby_name": "lobby",
+}
+ret = parse_args(config, sys.argv)
+if ret is not None:
+    sys.exit(ret)
 
 port, token = determine_app_port_and_token()
-asyncio.run(main(difficulty, password, mode, bots, spectator_policy, port, token))
+asyncio.run(main(config, port, token))
