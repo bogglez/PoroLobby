@@ -1,51 +1,31 @@
-# PoroLobby
+main.py -h/--help -s/--specator-policy POLICY -p/--password PASSWORD -m/--mode MODE -l/--lobby-name LOBBYNAME TEAMS
 
-PoroLobby creates 5v5 Practice Tool with bots in League of Legends. This tool uses [lcu-driver](https://github.com/sousa-andre/lcu-driver) to access League Client API.
+A tool to create a custom game or practice tool lobby with multiple bots.
+Bots on each team can be chosen randomly or by name at a given difficulty each.
 
-## How to use
+USAGE:
+   TEAMS      = "TEAM|TEAM"           Set red and blue teams.
+              = "TEAM"                Set blue team only.
+   TEAM       = "BOT BOT BOT BOT BOT" Set team's bots (0 to 4 for red, 0 to 5 for blue).
+   BOT        = "CHAMPION:DIFFICULTY" Set a champion at the given difficulty.
+              = "CHAMPION"            Set a champion at medium difficulty.
+   CHAMPION   = "?"                   Set a random champion.
+              = "Alistar"             Set a specific champion.
+                Available champions: https://leagueoflegends.fandom.com/wiki/Bots#Available_Bots
+   DIFFICULTY = "EASY" "MEDIUM"
+   POLICY     = "AllAllowed" "NotAllowed"
+   MODE       = "CUSTOM" "PRACTICETOOL"
 
-### Easy way
+EXAMPLES:
+  Full random teams:
+  main.py "? ? ? ?|? ? ? ? ?"
 
-Video guide:
+  Alistar on left team with you, 2 randoms on other:
+  main.py "Alistar|? ?"
 
-[![Video guide](https://img.youtube.com/vi/EHd3vRVECLg/0.jpg)](https://www.youtube.com/watch?v=EHd3vRVECLg)
+  1v1 against Brand:
+  main.py "Brand"
 
-1. Download `PoroLobby.zip` file from Releases section. Or just click this link.
-2. Extract the archive and go to the extracted `PoroLobby` folder
-2. Start League of Legends and log in
-3. Run the `porolobby.exe` - the lobby will be created and filled with intermediate bots
-4. Start the game and ENJOY!
+  Own champs easy, opposing champs medium difficulty:
+  main.py "?:EASY ?:EASY ?:EASY ?:EASY|? ? ? ? ?"
 
-### Advanced users (Win/Mac/Linux)
-
-If you know Python, there's no need to run the exe file.
-
-1. Install [Python 3](https://www.python.org/downloads/)
-
-2. Clone this repository and navigate to its folder
-```SHELL
-git clone https://github.com/LeagueOfPoro/PoroLobby.git
-cd PoroLobby
-```
-
-3. Install requirements
-```SHELL
-pip install -r requirements.txt
-```
-4. Run `porolobby.py`
-```SHELL
-python porolobby.py
-```
-This method should work on all platforms.
-
-## Disclaimer
-
-This tool uses the official League Client API, and therfore the use of this tool should not be bannable by Riot Games. That said, League of Poro provides no guarantee whatsoever. Use at your own risk!
-
-## License 
-
-This tool is distributed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) license.
-
-## Endorsement
-
-PoroLobby isn’t endorsed by Riot Games and doesn’t reflect the views or opinions of Riot Games or anyone officially involved in producing or managing League of Legends. League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc.
