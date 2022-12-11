@@ -190,18 +190,22 @@ def parse_args(config, argv):
                 print(f'Cannot parse specator policy "{v}". Expected "AllAllowed" or "NotAllowed".')
                 return 1
             config["spectator_policy"] = v
+            next(itr)
         elif k in ["-p", "--password"]:
             config["password"] = "" if v is None else v
+            next(itr)
         elif k in ["-m", "--mode"]:
             if v not in ["CUSTOM", "PRACTICETOOL"]:
                 print(f'Cannot parse game mode "{v}". Expected "CUSTOM" or "PRACTICETOOL".')
                 return 1
             config["mode"] = v
+            next(itr)
         elif k in ["-l", "--lobby-name"]:
             if v is None or len(v) == 0:
                 print("Expected lobby name")
                 return 1
             config["lobby_name"] = v
+            next(itr)
         elif k.startswith('-'):
             print(f'Unknown command line argument "{k}".')
             return 1
