@@ -18,7 +18,7 @@ CHAMPION   = "?"                   Set a random champion.
              Available champions: https://leagueoflegends.fandom.com/wiki/Bots#Available_Bots
 DIFFICULTY = "EASY" "MEDIUM"
 POLICY     = "NotAllowed" "LobbyAllowed" "FriendsAllowed" "AllAllowed"
-MODE       = "CUSTOM" "PRACTICETOOL"
+MODE       = "CLASSIC" "PRACTICETOOL"
 ```
 
 # Examples
