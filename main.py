@@ -127,7 +127,7 @@ def determine_app_port_and_token():
         raise RuntimeError("Cannot determine app port and token.")
     return (port, token)
 
-async def main(config, port, token):
+async def async_main(config, port, token):
     bots_by_team = config["bots"].split("|", 1)
     if len(bots_by_team) > 1:
         bots_red = bots_by_team[0].split()
@@ -213,6 +213,15 @@ def parse_args(config, argv):
             config["bots"] = k
     return None
 
+def main(argv):
+    ret = parse_args(config, argv)
+    if ret is not None:
+        return ret
+
+    print(config)
+    port, token = determine_app_port_and_token()
+    asyncio.run(async_main(config, port, token))
+
 config = {
     "password": "delete yuumi",
     "mode": ["CLASSIC", "PRACTICETOOL"][1],
@@ -220,9 +229,6 @@ config = {
     "bots": "? ? ? ?|? ? ? ? ?",
     "lobby_name": "lobby",
 }
-ret = parse_args(config, sys.argv)
-if ret is not None:
-    sys.exit(ret)
 
-port, token = determine_app_port_and_token()
-asyncio.run(main(config, port, token))
+if __name__ == "__main__":
+    sys.exit(main(sys.argv))
